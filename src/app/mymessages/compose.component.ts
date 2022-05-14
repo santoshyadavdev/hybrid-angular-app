@@ -14,8 +14,20 @@ class ComposeController {
   message;
   canExit: boolean;
 
-  static $inject = ['$state', 'DialogService', 'AppConfig', 'Messages'];
-  constructor(public $state, public DialogService, public AppConfig, public Messages) { }
+  static $inject = [
+    "$state",
+    "DialogService",
+    "AppConfig",
+    "configService",
+    "configService",
+  ];
+  constructor(
+    public $state,
+    public DialogService,
+    public AppConfig,
+    public Messages,
+    public Config
+  ) {}
 
   /**
    * Create our message's model using the current user's email address as 'message.from'
@@ -24,8 +36,13 @@ class ComposeController {
    * These copies are used to check if the message is dirty.
    */
   $onInit() {
-    this.pristineMessage = angular.extend({from: this.AppConfig.emailAddress}, this.$stateParams.message);
+    this.pristineMessage = angular.extend(
+      { from: this.AppConfig.emailAddress },
+      this.$stateParams.message
+    );
     this.message = angular.copy(this.pristineMessage);
+
+    console.log(this.Config);
   }
 
   /**
@@ -34,11 +51,11 @@ class ComposeController {
    */
   uiCanExit() {
     if (this.canExit || angular.equals(this.pristineMessage, this.message)) {
-        return true;
+      return true;
     }
 
-    var message = 'You have not saved this message.';
-    var question = 'Navigate away and lose changes?';
+    var message = "You have not saved this message.";
+    var question = "Navigate away and lose changes?";
     return this.DialogService.confirm(message, question, "Yes", "No");
   }
 
@@ -54,20 +71,28 @@ class ComposeController {
     let state = hasPrevious ? $transition$.from() : "mymessages.messagelist";
     let params = hasPrevious ? $transition$.params("from") : {};
     this.$state.go(state, params);
-  };
+  }
 
   /** "Send" the message (save to the 'sent' folder), and then go to the previous state */
   send(message) {
-    this.Messages.save(angular.extend(message, {date: new Date(), read: true, folder: 'sent'}))
-        .then(() => this.canExit = true)
-        .then(() => this.gotoPreviousState());
-  };
+    this.Messages.save(
+      angular.extend(message, { date: new Date(), read: true, folder: "sent" })
+    )
+      .then(() => (this.canExit = true))
+      .then(() => this.gotoPreviousState());
+  }
 
   /** Save the message to the 'drafts' folder, and then go to the previous state */
   save(message) {
-    this.Messages.save(angular.extend(message, {date: new Date(), read: true, folder: 'drafts'}))
-        .then(() => this.canExit = true)
-        .then(() => this.gotoPreviousState());
+    this.Messages.save(
+      angular.extend(message, {
+        date: new Date(),
+        read: true,
+        folder: "drafts",
+      })
+    )
+      .then(() => (this.canExit = true))
+      .then(() => this.gotoPreviousState());
   }
 }
 

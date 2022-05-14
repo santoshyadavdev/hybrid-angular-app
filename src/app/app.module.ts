@@ -8,6 +8,7 @@ import { sampleAppModuleAngularJS } from './app.angularjs.module';
 import { PrefsModule } from './prefs/prefs.module';
 import { UIRouter } from '@uirouter/angularjs';
 import { ProductModule } from './product/product.module';
+import { CONFIG_TOKEN, CONFIG_VALUE } from './config.token';
 
 // Create a "future state" (a placeholder) for the Contacts
 // Angular module which will be lazy loaded by UI-Router
@@ -37,18 +38,30 @@ export function getContactsService($injector) {
     UIRouterModule.forRoot({ states: [contactsFutureState] }),
     // The preferences feature module
     PrefsModule,
-    ProductModule
+    ProductModule,
   ],
   providers: [
-       // Register some AngularJS services as Angular providers
-    { provide: 'DialogService', deps: ['$injector'], useFactory: getDialogService },
-    { provide: 'Contacts', deps: ['$injector'], useFactory: getContactsService },
+    // Register some AngularJS services as Angular providers
+    {
+      provide: "DialogService",
+      deps: ["$injector"],
+      useFactory: getDialogService,
+    },
+    {
+      provide: "Contacts",
+      deps: ["$injector"],
+      useFactory: getContactsService,
+    },
+    { provide: CONFIG_TOKEN, 
+    useValue: CONFIG_VALUE },
   ],
 })
 export class AppModule {
-  constructor(private upgrade: UpgradeModule) { }
+  constructor(private upgrade: UpgradeModule) {}
 
   ngDoBootstrap() {
-    this.upgrade.bootstrap(document.body, [sampleAppModuleAngularJS.name], { strictDi: true });
+    this.upgrade.bootstrap(document.body, [sampleAppModuleAngularJS.name], {
+      strictDi: true,
+    });
   }
 }
