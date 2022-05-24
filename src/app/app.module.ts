@@ -9,6 +9,7 @@ import { PrefsModule } from './prefs/prefs.module';
 import { UIRouter } from '@uirouter/angularjs';
 import { ProductModule } from './product/product.module';
 import { CONFIG_TOKEN, CONFIG_VALUE } from './config.token';
+import { NavigationComponent } from './navigation/navigation.component';
 
 // Create a "future state" (a placeholder) for the Contacts
 // Angular module which will be lazy loaded by UI-Router
@@ -55,6 +56,7 @@ export function getContactsService($injector) {
     { provide: CONFIG_TOKEN, 
     useValue: CONFIG_VALUE },
   ],
+  declarations: [NavigationComponent],
 })
 export class AppModule {
   constructor(private upgrade: UpgradeModule) {}

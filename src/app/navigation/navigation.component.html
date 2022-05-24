@@ -1,0 +1,23 @@
+<div [ngSwitch]="role">
+  <div *ngSwitchCase="'Can View Dashboards'">
+    <li ui-sref-active="active">
+      <a ui-sref="dashboard.index">
+        <span class="nav-label"> Dashboard </span>
+      </a>
+    </li>
+  </div>
+  <div *ngSwitchCase="'Can Create Order'">
+    <li ui-sref-active="active">
+      <a ui-sref="createOrder.index({mode : ''})">
+        <span class="nav-label"> Create Job </span>
+      </a>
+    </li>
+  </div>
+  <div *ngSwitchCase="'Can Create Container Order'">
+    <li ui-sref-active="active">
+      <a ui-sref="createContainerOrder.index({mode : ''})">
+        <span class="nav-label"> Create Container Job </span>
+      </a>
+    </li>
+  </div>
+</div>
